@@ -35,6 +35,7 @@ all: os.elf
 os.elf: ${OBJS}
 	${CC} ${CFLAGS} -T os.ld -o os.elf $^
 	${OBJCOPY} -O binary os.elf os.bin
+	./spl_tool -c -f os.bin
 
 %.o : %.c
 	${CC} ${CFLAGS} -c -o $@ $<

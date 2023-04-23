@@ -35,6 +35,7 @@ void schedule()
 
 	_current = (_current + 1) % _top;
 	struct context *next = &(ctx_tasks[_current]);
+	printf("0x%x\n", next);
 	switch_to(next);
 }
 
@@ -49,8 +50,9 @@ void schedule()
 int task_create(void (*start_routin)(void))
 {
 	if (_top < MAX_TASKS) {
-		ctx_tasks[_top].sp = (reg_t) &task_stack[_top][STACK_SIZE - 1];
+		ctx_tasks[_top].sp = (reg_t) &task_stack[_top][STACK_SIZE - 1] & ~((reg_t)0x7);
 		ctx_tasks[_top].pc = (reg_t) start_routin;
+		printf("0x%x, 0x%x\n", ctx_tasks[_top].sp, ctx_tasks[_top].pc);
 		_top++;
 		return 0;
 	} else {
@@ -67,7 +69,7 @@ void task_yield()
 {
 	/* trigger a machine-level software interrupt */
 	int id = r_mhartid();
-	*(uint32_t*)CLINT_MSIP(id) = 1;
+	*(uint64_t*)CLINT_MSIP(id) = 1;
 }
 
 /*

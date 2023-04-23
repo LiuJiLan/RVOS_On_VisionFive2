@@ -47,7 +47,7 @@ ENTRY( _start )
  */
 MEMORY
 {
-	ram   (wxa!ri) : ORIGIN = 0x80000000, LENGTH = 128M
+	ram   (wxa!ri) : ORIGIN = 0x8000000, LENGTH = 128K
 }
 
 /*
@@ -78,6 +78,8 @@ MEMORY
  * the CURRENT location ('.' = current memory location). This current memory
  * location moves as we add things.
  */
+ 
+ BASE_ADDRESS = 0x8000000;
 SECTIONS
 {
 	/*
@@ -85,7 +87,8 @@ SECTIONS
 	 * starting with .text. The asterisk("*") in front of the
 	 * parentheses means to match the .text section of ANY object file.
 	 */
-	.text : {
+	. = BASE_ADDRESS;
+	.text :AT(0x8000000) {
 		PROVIDE(_text_start = .);
 		*(.text .text.*)
 		PROVIDE(_text_end = .);

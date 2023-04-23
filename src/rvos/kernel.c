@@ -14,9 +14,11 @@ extern void plic_init(void);
 extern void timer_init(void);
 
 void start_kernel(void)
-{
+{	
+	// 由于和PLL相关，所以就用BOOTROM中初始化的UART
 	uart_init();
 	uart_puts("Hello, RVOS!\n");
+	
 
 	page_init();
 
@@ -27,7 +29,7 @@ void start_kernel(void)
 	timer_init();
 
 	sched_init();
-
+	
 	os_main();
 
 	schedule();

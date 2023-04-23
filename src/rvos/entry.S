@@ -3,36 +3,36 @@
 # base->ra = ra;
 # ......
 .macro reg_save base
-	sw ra, 0(\base)
-	sw sp, 4(\base)
-	sw gp, 8(\base)
-	sw tp, 12(\base)
-	sw t0, 16(\base)
-	sw t1, 20(\base)
-	sw t2, 24(\base)
-	sw s0, 28(\base)
-	sw s1, 32(\base)
-	sw a0, 36(\base)
-	sw a1, 40(\base)
-	sw a2, 44(\base)
-	sw a3, 48(\base)
-	sw a4, 52(\base)
-	sw a5, 56(\base)
-	sw a6, 60(\base)
-	sw a7, 64(\base)
-	sw s2, 68(\base)
-	sw s3, 72(\base)
-	sw s4, 76(\base)
-	sw s5, 80(\base)
-	sw s6, 84(\base)
-	sw s7, 88(\base)
-	sw s8, 92(\base)
-	sw s9, 96(\base)
-	sw s10, 100(\base)
-	sw s11, 104(\base)
-	sw t3, 108(\base)
-	sw t4, 112(\base)
-	sw t5, 116(\base)
+sd ra, 0(\base)
+sd sp, 8(\base)
+sd gp, 16(\base)
+sd tp, 24(\base)
+sd t0, 32(\base)
+sd t1, 40(\base)
+sd t2, 48(\base)
+sd s0, 56(\base)
+sd s1, 64(\base)
+sd a0, 72(\base)
+sd a1, 80(\base)
+sd a2, 88(\base)
+sd a3, 96(\base)
+sd a4, 104(\base)
+sd a5, 112(\base)
+sd a6, 120(\base)
+sd a7, 128(\base)
+sd s2, 136(\base)
+sd s3, 144(\base)
+sd s4, 152(\base)
+sd s5, 160(\base)
+sd s6, 168(\base)
+sd s7, 176(\base)
+sd s8, 184(\base)
+sd s9, 192(\base)
+sd s10, 200(\base)
+sd s11, 208(\base)
+sd t3, 216(\base)
+sd t4, 224(\base)
+sd t5, 232(\base)
 	# we don't save t6 here, due to we have used
 	# it as base, we have to save t6 in an extra step
 	# outside of reg_save
@@ -43,37 +43,37 @@
 # ra = base->ra;
 # ......
 .macro reg_restore base
-	lw ra, 0(\base)
-	lw sp, 4(\base)
-	lw gp, 8(\base)
-	lw tp, 12(\base)
-	lw t0, 16(\base)
-	lw t1, 20(\base)
-	lw t2, 24(\base)
-	lw s0, 28(\base)
-	lw s1, 32(\base)
-	lw a0, 36(\base)
-	lw a1, 40(\base)
-	lw a2, 44(\base)
-	lw a3, 48(\base)
-	lw a4, 52(\base)
-	lw a5, 56(\base)
-	lw a6, 60(\base)
-	lw a7, 64(\base)
-	lw s2, 68(\base)
-	lw s3, 72(\base)
-	lw s4, 76(\base)
-	lw s5, 80(\base)
-	lw s6, 84(\base)
-	lw s7, 88(\base)
-	lw s8, 92(\base)
-	lw s9, 96(\base)
-	lw s10, 100(\base)
-	lw s11, 104(\base)
-	lw t3, 108(\base)
-	lw t4, 112(\base)
-	lw t5, 116(\base)
-	lw t6, 120(\base)
+ld ra, 0(\base)
+ld sp, 8(\base)
+ld gp, 16(\base)
+ld tp, 24(\base)
+ld t0, 32(\base)
+ld t1, 40(\base)
+ld t2, 48(\base)
+ld s0, 56(\base)
+ld s1, 64(\base)
+ld a0, 72(\base)
+ld a1, 80(\base)
+ld a2, 88(\base)
+ld a3, 96(\base)
+ld a4, 104(\base)
+ld a5, 112(\base)
+ld a6, 120(\base)
+ld a7, 128(\base)
+ld s2, 136(\base)
+ld s3, 144(\base)
+ld s4, 152(\base)
+ld s5, 160(\base)
+ld s6, 168(\base)
+ld s7, 176(\base)
+ld s8, 184(\base)
+ld s9, 192(\base)
+ld s10, 200(\base)
+ld s11, 208(\base)
+ld t3, 216(\base)
+ld t4, 224(\base)
+ld t5, 232(\base)
+ld t6, 240(\base)
 .endm
 
 # Something to note about save/restore:
@@ -98,11 +98,11 @@ trap_vector:
 	# mscratch
 	mv	t5, t6		# t5 points to the context of current task
 	csrr	t6, mscratch	# read t6 back from mscratch
-	sw	t6, 120(t5)	# save t6 with t5 as base
+	sd	t6,240(t5)	# save t6 with t5 as base
 
 	# save mepc to context of current task
 	csrr	a0, mepc
-	sw	a0, 124(t5)
+	sd	a0, 248(t5)
 
 	# Restore the context pointer into mscratch
 	csrw	mscratch, t5
@@ -130,13 +130,15 @@ trap_vector:
 switch_to:
 	# switch mscratch to point to the context of the next task
 	csrw	mscratch, a0
-	# set mepc to the pc of the next task
-	lw	a1, 124(a0)
-	csrw	mepc, a1
 
+	# set mepc to the pc of the next task
+	ld	a1, 248(a0)
+	csrw	mepc, a1
+	
 	# Restore all GP registers
 	# Use t6 to point to the context of the new task
 	mv	t6, a0
+	
 	reg_restore t6
 
 	# Do actual context switching.

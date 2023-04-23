@@ -59,7 +59,7 @@ struct context {
 
 	// save the pc to run in next schedule cycle
 	reg_t pc; // offset: 31 *4 = 124
-};
+}__attribute((packed));
 
 extern int  task_create(void (*task)(void));
 extern void task_delay(volatile int count);

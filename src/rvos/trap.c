@@ -34,7 +34,10 @@ reg_t trap_handler(reg_t epc, reg_t cause, struct context *cxt)
 	reg_t return_pc = epc;
 	reg_t cause_code = cause & 0xfff;
 	
-	if (cause & 0x80000000) {
+	reg_t mask = 0x1;
+	mask = mask << 63;
+	
+	if (cause & mask) {
 		/* Asynchronous trap - interrupt */
 		switch (cause_code) {
 		case 3:

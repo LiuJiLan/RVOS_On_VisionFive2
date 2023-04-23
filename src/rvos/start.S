@@ -42,6 +42,7 @@ _start:
 	# https://gitee.com/unicornx/riscv-operating-system-mooc/issues/I441IC (in chinese)
 	# So it's just a temporary workaround till now to not block people who
 	# want to try newer qemu (>= 6.0).
+	# not t0, x0
 	li      t0, 0xffffffff
 	csrw    pmpaddr0, t0
 	li      t0, 0xf
