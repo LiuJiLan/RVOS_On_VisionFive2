@@ -17,14 +17,18 @@ void start_kernel(void)
 {	
 	// 由于和PLL相关，所以就用BOOTROM中初始化的UART
 	uart_init();
+	uart_puts("\n");
 	uart_puts("Hello, RVOS!\n");
+	uart_puts("\n");
 	
 
 	page_init();
+	uart_puts("\n");
 
 	trap_init();
 
 	plic_init();
+	uart_puts("\n");
 
 	timer_init();
 

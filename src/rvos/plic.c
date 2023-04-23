@@ -26,10 +26,11 @@ void plic_init(void)
 	//因为大多数这种Reserved空间都是Write Ignore Read Ignore的
 	uint32_t * p = (uint32_t*)PLIC_MENABLE(hart, 0);
 	
-	printf("The following interrupts are already enabled:\n");
+	printf("The following interrupts are already enabled before we set them:\n");
 	
 	for (int i = 0; i < 5; i++) {
 		uint32_t enable_reg = *(p+i);
+		printf("PLIC Enable Register %d: ", i);
 		if (enable_reg){
 			for (int j = 0; j < 32; j++){
 				uint32_t mask = 0x01;
@@ -41,7 +42,7 @@ void plic_init(void)
 		}
 	}
 	
-	printf("We will disable them all.");
+	printf("We will disable them all.\n");
 	for (int i = 0; i < 5; i++) {
 		*(p+i) = 0x0;
 	}

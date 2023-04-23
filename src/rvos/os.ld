@@ -47,7 +47,7 @@ ENTRY( _start )
  */
 MEMORY
 {
-	ram   (wxa!ri) : ORIGIN = 0x8000000, LENGTH = 128K
+	ram   (wxa!ri) : ORIGIN = 0x8000000, LENGTH = 256K
 }
 
 /*
