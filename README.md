@@ -3,7 +3,7 @@ RVOS在VisionFive2开发板上的移植。
 
 # 成果展示
 
-![截屏2023-04-23 20.38.31](./asset/截屏2023-04-23 20.38.31.png)
+![截屏2023-04-23 20.38.31](./asset/screenshot.png)
 
 ```shell
 (C)StarFive                                                                           
