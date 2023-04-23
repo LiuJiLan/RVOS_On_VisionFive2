@@ -133,17 +133,3 @@ void panic(char *s)
 	printf("\n");
 	while(1){};
 }
-
-void see(reg_t a){
-	printf("0x%x\n", a);
-}
-
-void asm_test(void) {
-	uart_puts("Sound Good!\n");
-}
-
-void see_all(reg_t * a) {
-	for (int i = 0; i < 32; i++) {
-		printf("%d: 0x%x\n", i, *(a + i));
-	}
-}

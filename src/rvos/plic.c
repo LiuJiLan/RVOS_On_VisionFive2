@@ -42,7 +42,7 @@ void plic_init(void)
 		}
 	}
 	
-	printf("We will disable them all.\n");
+	printf("We will disable them all. And then, only enable UART0.\n");
 	for (int i = 0; i < 5; i++) {
 		*(p+i) = 0x0;
 	}
