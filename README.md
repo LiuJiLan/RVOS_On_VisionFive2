@@ -41,8 +41,6 @@ tick: 3
 ...
 ```
 
-
-
 # 板子参数
 
 CPU: JH7110 
@@ -228,3 +226,5 @@ VisionFive2的UART启动时, 使用xmodem协议接收。MacOS使用brew下载min
 RVOS作为一个运行在M态和U态的系统, 如果它放在一本介绍操作系统内核的书里，它就是一个两个进程的Demo系统而已。但正是因为它足够简单，给了我们按自己意愿去塑造它的空间。
 
 它涵盖了RISC-V体系结构的基础, 作为RISC-V体系结构的入门它是很好的参考。
+
+RVOS的其他移植可见[这里](https://gitee.com/unicornx/riscv-operating-system-mooc/issues/I64EEQ)。
