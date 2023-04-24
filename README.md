@@ -1,45 +1,53 @@
 # RVOS_On_VisionFive2
 RVOS在VisionFive2开发板上的移植。
 
+
+
 # 成果展示
 
 ![截屏2023-04-23 20.38.31](./asset/screenshot.png)
 
 ```shell
-(C)StarFive                                                                           
-CCCCCCCCCC                                                                            
-Hello, RVOS!                                                                          
-HEAP_START = 0000000008008708, HEAP_SIZE = 00000000000378f8, num of pages = 47        
-TEXT:   0x0000000008000000 -> 0x0000000008003b7a                                      
-RODATA: 0x0000000008003b80 -> 0x0000000008004058                                      
-DATA:   0x0000000008005000 -> 0x0000000008005004                                      
-BSS:    0x0000000008005008 -> 0x0000000008008708                                      
-HEAP:   0x0000000008011000 -> 0x0000000008040000                                      
-                                                                                      
-The following interrupts are already enabled before we set them:                      
-PLIC Enable Register 0: 1; 2; 4; 5; 7; 8; 9; 10; 12; 16; 19; 21; 23; 24; 25;          
-PLIC Enable Register 1: 34; 37; 38; 43; 45; 48; 51; 52; 55; 56; 57; 58; 59; 63;       
-PLIC Enable Register 2: 64; 67; 69; 72; 74; 76; 77; 84; 88; 92; 94;                   
-PLIC Enable Register 3: 97; 98; 100; 101; 104; 107; 110; 112; 120; 121; 125; 126;     
-PLIC Enable Register 4: 128; 131; 134; 135;                                           
-We will disable them all.                                                             
-                                                                                      
-Task 0: Created!                                                                      
-Sync exceptions!, code = 8                                                            
-System call from U-mode!                                                              
---> sys_gethid, arg0 = 0x00000000080057e8                                             
-system call returned!, hart id is 0                                                   
-Task 0: Running... 
-timer interruption!                                                                   
-tick: 1
-Task 1: Created!
-Task 1: Running... 
+(C)StarFive                                                                         
+CCCCCCCCC                                                                           
+Hello, RVOS!                                                                        
+                                                                                    
+HEAP_START = 0000000008007708, HEAP_SIZE = 00000000000388f8, num of pages = 48      
+TEXT:   0x0000000008000000 -> 0x0000000008003aea                                    
+RODATA: 0x0000000008003af0 -> 0x0000000008003fb8                                    
+DATA:   0x0000000008004000 -> 0x0000000008004004                                    
+BSS:    0x0000000008004008 -> 0x0000000008007708                                    
+HEAP:   0x0000000008010000 -> 0x0000000008040000                                    
+                                                                                    
+The following interrupts are already enabled before we set them:                    
+PLIC Enable Register 0: 1; 2; 4; 5; 8; 12; 16; 19; 21; 22; 23; 24;                  
+PLIC Enable Register 1: 37; 38; 43; 51; 52; 55; 56; 57; 58; 59; 63;                 
+PLIC Enable Register 2: 64; 67; 69; 72; 76; 77; 84; 92; 94;                         
+PLIC Enable Register 3: 97; 98; 100; 101; 104; 107; 110; 117; 121; 126;             
+PLIC Enable Register 4: 128; 131; 134; 135;                                         
+We will disable them all. And then, only enable UART0.                              
+                                                                                    
+Task 0: Created!                                                                    
+Sync exceptions!, code = 8                                                          
+System call from U-mode!                                                            
+--> sys_gethid, arg0 = 0x00000000080047e8                                           
+system call returned!, hart id is 0                                                 
+Task 0: Running...                                                                  
+timer interruption!                                                                 
+tick: 1                                                                             
+Task 1: Created!                                                                    
+Task 1: Running...                                                                  
 timer interruption!
-tick: 2
+tick: 2                                                                             
 timer interruption!
 tick: 3
+timer interruption!
+tick: 4
+timer interruption!
 ...
 ```
+
+
 
 # 板子参数
 
@@ -50,6 +58,8 @@ CPU: JH7110
 UART: 8250芯片兼容
 
 其他参数略
+
+
 
 # 移植思路
 
@@ -71,15 +81,19 @@ PS: 由于QEMU所模拟的芯片为SiFive旗下的FU540, 所以CLINT和PLIC部�
 
 ## 启动流程
 
-1. 对启动流程的研究是向具体开发板移植的第一步。[昉·惊鸿7110启动手册](https://doc.rvspace.org/VisionFive2/Developing_and_Porting_Guide/JH7110_Boot_UG/index.html)
+1. 对启动流程的研究是向具体开发板移植的第一步。参考了[昉·惊鸿7110启动手册](https://doc.rvspace.org/VisionFive2/Developing_and_Porting_Guide/JH7110_Boot_UG/index.html)。
 
     简言之的启动流程是:**BootROM** > **SPL** > **U-Boot** (OpenSBI + Uboot) > **Linux**
+
+    
 
 2. 确定我们的系统将取代启动流程中的哪一个步骤
 
    1. 由于RISC-V的体系结构设计, 我们要清楚自己要移植的系统是运行在什么权级的。这将是确定取代启动流程中哪个步骤的重要依据。
 
       在我们这次移植中: **RVOS的内核态就是运行在M态的**。
+
+      
 
    2. 讨论每个替代部分的可行性
 
@@ -91,7 +105,11 @@ PS: 由于QEMU所模拟的芯片为SiFive旗下的FU540, 所以CLINT和PLIC部�
       | U-Boot         | S态, 被加载入DDR, 通过重新编译/设置SBI或许可行               | 官方给出的SBI的下一权级是S态, 如果替代将要对SBI做一些修改    |
       | Linux          | S态, 被加载入DDR, 且要遵循一定的内核标准才能被载入           | 要对SBI做修改, 且要可能要遵循一些标准                        |
 
+      
+
    3. 综上所述, 我个人最终选择了**替换掉SPL**。好处是可以用UART快速载入并调试, 待成熟可以进一步考虑烧录进SD卡。缺点是只能使用SRAM空间, 而且由于手册暂时还有待完善, SRAM的大小是根据[这里](https://doc.rvspace.org/VisionFive2/Developing_and_Porting_Guide/JH7110_Boot_UG/JH7110_SDK/boot_address_allocation.html)提到的SPL在Flash中的分配空间推算出来的。
+
+   
 
 3. 查询手册找到自己替换目标的正确形式
 
@@ -116,6 +134,8 @@ PS: 由于QEMU所模拟的芯片为SiFive旗下的FU540, 所以CLINT和PLIC部�
    		timebase-frequency = <4000000>;
    	};
    ```
+
+   
 
 2. 寄存器信息
 
@@ -147,13 +167,19 @@ PS: 由于QEMU所模拟的芯片为SiFive旗下的FU540, 所以CLINT和PLIC部�
 
    我们主要关注`reg-io-width = <4>;`与`reg-shift = <2>;`。他们代表了每个寄存器的访问位宽和偏移。我也是第一次知道, 再次感谢GPT。
 
+   
+
 3. PLIC中的UART中断号
 
    有三个提分提到了UART0的中断号:
 
    1. 在[设备树配置](https://doc.rvspace.org/VisionFive2/Developing_and_Porting_Guide/JH7110_SDK_DG_UART/JH7110_SDK/general_uart_controller.html)一节中提到了, 中断号为32。
 
-   2.  在JH7110的正在编写中的详细手册的一节中的**Interrupt Connections**提到了`u0_dw_uart`到`u0_u7mc_sft7110(clock)`的连接是`global_interrupts[27]`。
+      
+
+   2. 在JH7110的正在编写中的详细手册的一节中的**Interrupt Connections**提到了`u0_dw_uart`到`u0_u7mc_sft7110(clock)`的连接是`global_interrupts[27]`。
+
+      
 
    3. 在Linux中用`cat /proc/interrupts`查看( 注意, 我只列出来一部分 ):
 
@@ -165,9 +191,18 @@ PS: 由于QEMU所模拟的芯片为SiFive旗下的FU540, 所以CLINT和PLIC部�
 
       其中指出, 对于PLIC, ttyS0(也就是UART0)的id为32。
 
-   造成32与27差异的**我的个人推测**是, 在[U74-MC手册](https://www.sifive.com/cores/u74-mc)的10.2节中提到, 有一些PLIC的中断ID被使用了。而`External Global Interrupts`的ID号是5-131, 正好是32和27的差值。注意这只是我的推测。
+      
+
+   4. 通过最终上板实验, 我确定UART0使用的PLIC中断ID为32。
+
+      > 造成32与27差异的**我的个人推测**是, 在[U74-MC手册](https://www.sifive.com/cores/u74-mc)的10.2节中提到, 有一些PLIC的中断ID被使用了。而`External Global Interrupts`的ID号是5-131, 正好是32和27的差值。注意这只是我的推测。
+
+
+
 
 # 注意事项
+
+
 
 ## 数据自然大小对齐
 
@@ -211,7 +246,7 @@ SRAM的地址没有在内存映射与设备树中提及, 只在[昉·惊鸿7110�
 
 ## Mac用户使用minicom的XMODEM功能
 
-VisionFive2的UART启动时, 使用xmodem协议接收。MacOS使用brew下载minicom时, 没有一并下载用于传输的库, 需要额外用brew安装lrzsz。另外, Mac中的高lrzsz也没有minicom默认使用的sx了, 只有lsx, 需要额外配置一下。
+VisionFive2的UART启动时, 使用xmodem协议接收。MacOS使用brew下载minicom时, 没有一并下载用于传输的库, 需要额外用brew安装lrzsz。另外, Mac中即使使用brew安装了lrzsz也没有minicom默认使用的sx了, 只有lsx, 需要额外配置一下。
 
 
 
@@ -219,11 +254,13 @@ VisionFive2的UART启动时, 使用xmodem协议接收。MacOS使用brew下载min
 
 尽管选择的资料完全能够支撑将我们现在的成果转移到用SD镜像启动, 但是个人的时间并不充裕。感兴趣的同学可以尝试。
 
+
+
 # 致谢
 
 再次对RVOS课程的汪辰老师表示感谢。
 
-RVOS作为一个运行在M态和U态的系统, 如果它放在一本介绍操作系统内核的书里，它就是一个两个进程的Demo系统而已。但正是因为它足够简单，给了我们按自己意愿去塑造它的空间。
+RVOS作为一个运行在M态和U态的系统, 如果它放在一本介绍操作系统内核的书里, 它就是一个两个进程的Demo系统而已。但正是因为它足够简单, 给了我们按自己意愿去塑造它的空间。
 
 它涵盖了RISC-V体系结构的基础, 作为RISC-V体系结构的入门它是很好的参考。
 
