@@ -79,6 +79,24 @@ PS: 由于QEMU所模拟的芯片为SiFive旗下的FU540, 所以CLINT和PLIC部�
 
 
 
+## 有关mtime频率
+
+关于mtime, 在CPU手册的**6.11.1 Timer Register**节中提到:
+
+> mtime is a 64-bit read-write register that contains the number of cycles counted from the rtc_toggle signal described in the U74-MC Core Complex User Guide. On reset, mtime is cleared to zero.
+
+如果查看JH7110手册时钟图能看出24M的时钟被/6后引入了芯片的rtc_toggle中。
+
+另外, 这个值会在设备树中以以下方式被引入:
+
+```
+cpus {
+		timebase-frequency = <4000000>;
+	};
+```
+
+
+
 ## 启动流程
 
 1. 对启动流程的研究是向具体开发板移植的第一步。参考了[昉·惊鸿7110启动手册](https://doc.rvspace.org/VisionFive2/Developing_and_Porting_Guide/JH7110_Boot_UG/index.html)。
