@@ -274,6 +274,10 @@ VisionFive2的UART启动时, 使用xmodem协议接收。MacOS使用brew下载min
 
 
 
+## 有关U-Boot引导下的S态启动
+
+官方的指导中有一点没说清楚, extlinux在SD卡第三分区中, 现在已经做到了通关U-Boot的启动选择菜单正确的引导了一个`Hello RVOS`的简易demo。S态RVOS完整移植我有时间来写一写。
+
 # 致谢
 
 再次对RVOS课程的汪辰老师表示感谢。
