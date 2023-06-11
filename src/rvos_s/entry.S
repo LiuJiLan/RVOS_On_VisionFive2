@@ -2,11 +2,13 @@
 # struct context *base = &ctx_task;
 # base->ra = ra;
 # ......
+# 发现的一个严重的BUG, tp维护着hartid
+# 它不应该被task的context覆盖!
 .macro reg_save base
 sd ra, 0(\base)
 sd sp, 8(\base)
 sd gp, 16(\base)
-sd tp, 24(\base)
+#sd tp, 24(\base)
 sd t0, 32(\base)
 sd t1, 40(\base)
 sd t2, 48(\base)
@@ -46,7 +48,7 @@ sd t5, 232(\base)
 ld ra, 0(\base)
 ld sp, 8(\base)
 ld gp, 16(\base)
-ld tp, 24(\base)
+#ld tp, 24(\base)
 ld t0, 32(\base)
 ld t1, 40(\base)
 ld t2, 48(\base)
