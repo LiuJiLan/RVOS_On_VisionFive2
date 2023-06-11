@@ -71,6 +71,7 @@ park:
 	wfi
 	j	park
 
+.align 3
 stacks:
 	.skip	STACK_SIZE * MAXNUM_CPU # allocate space for all the harts stacks
 
