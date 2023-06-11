@@ -126,10 +126,13 @@ int printf(const char* s, ...)
 	return res;
 }
 
+extern void sbi_shutdown(void);
+
 void panic(char *s)
 {
 	printf("panic: ");
 	printf(s);
 	printf("\n");
-	while(1){};
+	sbi_shutdown();
+	//while(1){};
 }

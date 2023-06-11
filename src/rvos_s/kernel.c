@@ -30,17 +30,29 @@ void sbi_puts(char *s)
 	}
 }
 
+void sbi_shutdown(void) {
+
+	register reg_t a7 asm("a7") = (reg_t)0x08;
+	asm volatile("ecall"
+				:
+				:"r"(a7)
+				:"memory");
+}
+
 void start_kernel(reg_t hartid, reg_t dtb_addr)
 {	
-	sbi_putchar('?');
-	sbi_puts("Hello by SBI!\n");
 	uart_init();
-	
 	uart_puts("\n");
 	uart_puts("Hello, RVOS!\n");
 	uart_puts("\n");
 	printf("Hart ID: %d\n", hartid);
 	printf("DTB is at %x\n", dtb_addr);
+	
+	reg_t sstatus = r_sstatus();
+	printf("sstatus:%x\n", sstatus);
+	if (sstatus & 0x02UL){
+		sbi_shutdown();
+	}
 
 	page_init();
 	uart_puts("\n");

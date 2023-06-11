@@ -7,7 +7,8 @@ int sys_gethid(unsigned int *ptr_hid)
 	if (ptr_hid == NULL) {
 		return -1;
 	} else {
-		*ptr_hid = r_mhartid();
+		//*ptr_hid = r_mhartid();
+		*ptr_hid = r_tp();
 		return 0;
 	}
 }

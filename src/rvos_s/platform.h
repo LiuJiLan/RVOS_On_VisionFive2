@@ -98,6 +98,6 @@
 #define CLINT_MTIME (CLINT_BASE + 0xBFF8) // cycles since boot.
 
 /* 10000000 ticks per-second */
-#define CLINT_TIMEBASE_FREQ 4000000
+#define CLINT_TIMEBASE_FREQ 4000000UL
 
 #endif /* __PLATFORM_H__ */

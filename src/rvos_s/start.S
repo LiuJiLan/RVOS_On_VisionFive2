@@ -17,6 +17,13 @@ entry:
 	mv s1, a1 #从SBI接入, 设备树地址, 为什么不存s0因为参考uboot源代码
 			  #(s0同时还是fp)
 	
+	# 注意清除sstatus中的SIE, 至少在我手头这个版本中的sstatus.SIE是开着的, 引发了混乱
+	# 请注意CSRCI的使用, 只有5位的立即数是有效的, 这也是为什么在xstatus中, XIE都在低位的原因		  
+	csrci sstatus, 0x02
+	
+	# 大胆这样做, 因为sie是WARL的(Write Any Values, Reads Legal Values)
+	csrw sie, zero
+	
 	# Set all bytes in the BSS section to zero.
 	la	a0, _bss_start
 	la	a1, _bss_end
@@ -29,7 +36,7 @@ entry:
 	# Setup stacks, the stack grows from bottom to top, so we put the
 	# stack pointer to the very end of the stack range.
 	
-	# 注意， 我们改用tp了， 而不是t0， 因为t0不再是hartid
+	# 注意, 我们改用tp了, 而不是t0, 因为t0不再是hartid
 	slli	t0, tp, 10		# shift left the hart id by 1024
 	la	sp, stacks + STACK_SIZE	# set the initial stack pointer
 					# to the end of the first stack space
@@ -75,9 +82,6 @@ entry:
 	or	t0, t0, a1
 	csrw	sstatus, t0
 	
-	la t0, temp_vector
-	csrw stvec, t0
-	
 	mv a0, tp
 	mv a1, s1
 
@@ -86,95 +90,6 @@ entry:
 park:
 	wfi
 	j	park
-	
-.align 2
-temp_vector:
-	csrr t0, scause
-	li t1, 63
-	srl t1, t0, t1
-	beqz t1, 1f
-	
-	li a0, 0x69
-	li   a7, 0x01
-	ecall
-	
-1:	addi a0, t0, 0x30
-	li   a7, 0x01
-	ecall
-	li a0, 0x0A
-	li   a7, 0x01
-	ecall
-	
-	csrr t0, stval
-	li t1, 0x0F
-	li t2, 16
-	
-2:	beqz t2, 3f
-	and t3, t0, t1
-	addi a0, t3, 0x41
-	li   a7, 0x01
-	ecall
-	srli t0, t0, 4
-	addi t2, t2, -1
-	j 2b
-3:	li a0, 0x0A
-	li   a7, 0x01
-	ecall
-
-	mv t0, sp
-	li t1, 0x0F
-	li t2, 16
-
-2:	beqz t2, 3f
-	and t3, t0, t1
-	addi a0, t3, 0x41
-	li   a7, 0x01
-	ecall
-	srli t0, t0, 4
-	addi t2, t2, -1
-	j 2b
-3:	li a0, 0x0A
-	li   a7, 0x01
-	ecall
-
-	la t0, entry
-	li t1, 0x0F
-	li t2, 16
-
-2:	beqz t2, 3f
-	and t3, t0, t1
-	addi a0, t3, 0x41
-	li   a7, 0x01
-	ecall
-	srli t0, t0, 4
-	addi t2, t2, -1
-	j 2b
-3:	li a0, 0x0A
-	li   a7, 0x01
-	ecall
-	
-	csrr t0, sepc
-	li t1, 0x0F
-	li t2, 16
-
-2:	beqz t2, 3f
-	and t3, t0, t1
-	addi a0, t3, 0x41
-	li   a7, 0x01
-	ecall
-	srli t0, t0, 4
-	addi t2, t2, -1
-	j 2b
-3:	li a0, 0x0A
-	li   a7, 0x01
-	ecall
-	
-	#mv a0, t0
-	li   a7, 0x08
-	ecall
-	
-
-	
 
 .align 3
 stacks:

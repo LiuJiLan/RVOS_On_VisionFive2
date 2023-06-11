@@ -114,10 +114,10 @@ static inline void w_sip(reg_t x)
 	asm volatile("csrw sip, %0" : : "r" (x));
 }
 
-static inline reg_t r_mcause()
+static inline reg_t r_scause()
 {
 	reg_t x;
-	asm volatile("csrr %0, mcause" : "=r" (x) );
+	asm volatile("csrr %0, scause" : "=r" (x) );
 	return x;
 }
 
