@@ -6,6 +6,8 @@ ifeq (${SYSCALL}, y)
 CFLAGS += -D CONFIG_SYSCALL
 endif
 
+#CFLAGS += -D QEMU
+
 SRCS_ASM = \
 	start.S \
 	mem.S \
@@ -36,9 +38,17 @@ os.elf: ${OBJS}
 	${CC} ${CFLAGS} -T os.ld -o os.elf $^
 
 rvos_image.bin: os.elf
+	riscv64-unknown-elf-objdump -S os.elf > kernel_dump.txt
+	riscv64-unknown-elf-readelf -a -W os.elf > kernel.txt
 	${OBJCOPY} -O binary os.elf os.bin
 	#用uboot工具中的制作可引导的镜像
 	mkimage -A riscv -O linux -T kernel -C none -a 0x40200000 -e 0x40200000 -d os.bin rvos_image.bin
+	
+.PHONY : mv
+mv: rvos_image.bin
+	sudo mount /dev/sdc3 ~/mntt
+	sudo cp rvos_image.bin ~/mntt
+	sudo umount ~/mntt
 
 %.o : %.c
 	${CC} ${CFLAGS} -c -o $@ $<

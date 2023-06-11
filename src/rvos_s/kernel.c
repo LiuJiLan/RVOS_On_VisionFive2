@@ -13,9 +13,27 @@ extern void trap_init(void);
 extern void plic_init(void);
 extern void timer_init(void);
 
+void sbi_putchar(char ch) {
+
+	register reg_t a7 asm("a7") = (reg_t)0x01;
+	register reg_t a0 asm("a0") = (reg_t)ch;
+	asm volatile("ecall"
+				:
+				:"r"(a0), "r"(a7)
+				: "memory");
+}
+
+void sbi_puts(char *s)
+{
+	while (*s) {
+		sbi_putchar(*s++);
+	}
+}
+
 void start_kernel(reg_t hartid, reg_t dtb_addr)
 {	
-	// 由于和PLL相关，所以就用BOOTROM中初始化的UART
+	sbi_putchar('?');
+	sbi_puts("Hello by SBI!\n");
 	uart_init();
 	
 	uart_puts("\n");

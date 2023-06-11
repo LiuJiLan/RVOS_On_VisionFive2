@@ -1,0 +1,204 @@
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           RISC-V
+  Version:                           0x1
+  Entry point address:               0x40200000
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          48624 (bytes into file)
+  Flags:                             0x3, RVC, single-float ABI
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         1
+  Size of section headers:           64 (bytes)
+  Number of section headers:         17
+  Section header string table index: 16
+
+Section Headers:
+  [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0
+  [ 1] .text             PROGBITS        0000000040200000 001000 00306a 00  AX  0   0 16
+  [ 2] .rodata           PROGBITS        0000000040203070 004070 0004f8 00   A  0   0  8
+  [ 3] .data             PROGBITS        0000000040203568 004568 000a9c 00  WA  0   0  4
+  [ 4] .bss              NOBITS          0000000040204008 005004 003700 00  WA  0   0  8
+  [ 5] .riscv.attributes RISCV_ATTRIBUTES 0000000000000000 005004 000034 00      0   0  1
+  [ 6] .comment          PROGBITS        0000000000000000 005038 00000f 01  MS  0   0  1
+  [ 7] .debug_line       PROGBITS        0000000000000000 005047 001d47 00      0   0  1
+  [ 8] .debug_info       PROGBITS        0000000000000000 006d8e 001d8a 00      0   0  1
+  [ 9] .debug_abbrev     PROGBITS        0000000000000000 008b18 000c75 00      0   0  1
+  [10] .debug_aranges    PROGBITS        0000000000000000 009790 0002a0 00      0   0 16
+  [11] .debug_str        PROGBITS        0000000000000000 009a30 0005a5 01  MS  0   0  1
+  [12] .debug_frame      PROGBITS        0000000000000000 009fd8 000c90 00      0   0  8
+  [13] .debug_ranges     PROGBITS        0000000000000000 00ac68 000030 00      0   0  1
+  [14] .symtab           SYMTAB          0000000000000000 00ac98 000c60 18     15  64  8
+  [15] .strtab           STRTAB          0000000000000000 00b8f8 000448 00      0   0  1
+  [16] .shstrtab         STRTAB          0000000000000000 00bd40 0000aa 00      0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
+  L (link order), O (extra OS processing required), G (group), T (TLS),
+  C (compressed), x (unknown), o (OS specific), E (exclude),
+  p (processor specific)
+
+There are no section groups in this file.
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x001000 0x0000000040200000 0x0000000040200000 0x004004 0x007708 RWE 0x1000
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .text .rodata .data .bss 
+
+There is no dynamic section in this file.
+
+There are no relocations in this file.
+
+The decoding of unwind sections for machine type RISC-V is not currently supported.
+
+Symbol table '.symtab' contains 132 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 0000000040200000     0 SECTION LOCAL  DEFAULT    1 
+     2: 0000000040203070     0 SECTION LOCAL  DEFAULT    2 
+     3: 0000000040203568     0 SECTION LOCAL  DEFAULT    3 
+     4: 0000000040204008     0 SECTION LOCAL  DEFAULT    4 
+     5: 0000000000000000     0 SECTION LOCAL  DEFAULT    5 
+     6: 0000000000000000     0 SECTION LOCAL  DEFAULT    6 
+     7: 0000000000000000     0 SECTION LOCAL  DEFAULT    7 
+     8: 0000000000000000     0 SECTION LOCAL  DEFAULT    8 
+     9: 0000000000000000     0 SECTION LOCAL  DEFAULT    9 
+    10: 0000000000000000     0 SECTION LOCAL  DEFAULT   10 
+    11: 0000000000000000     0 SECTION LOCAL  DEFAULT   11 
+    12: 0000000000000000     0 SECTION LOCAL  DEFAULT   12 
+    13: 0000000000000000     0 SECTION LOCAL  DEFAULT   13 
+    14: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS start.o
+    15: 0000000000000400     0 NOTYPE  LOCAL  DEFAULT  ABS STACK_SIZE
+    16: 0000000040200178     0 NOTYPE  LOCAL  DEFAULT    1 stacks
+    17: 0000000040200098     0 NOTYPE  LOCAL  DEFAULT    1 temp_vector
+    18: 0000000040200092     0 NOTYPE  LOCAL  DEFAULT    1 park
+    19: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS kernel.c
+    20: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS uart.c
+    21: 0000000040201856    54 FUNC    LOCAL  DEFAULT    1 uart_read_reg
+    22: 000000004020188c    64 FUNC    LOCAL  DEFAULT    1 uart_write_reg
+    23: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS printf.c
+    24: 00000000402019e8  1060 FUNC    LOCAL  DEFAULT    1 _vsnprintf
+    25: 0000000040204008  1000 OBJECT  LOCAL  DEFAULT    4 out_buf
+    26: 0000000040201e0c   128 FUNC    LOCAL  DEFAULT    1 _vprintf
+    27: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS page.c
+    28: 00000000402043f0     8 OBJECT  LOCAL  DEFAULT    4 _alloc_start
+    29: 00000000402043f8     8 OBJECT  LOCAL  DEFAULT    4 _alloc_end
+    30: 0000000040204400     8 OBJECT  LOCAL  DEFAULT    4 _num_pages
+    31: 0000000040201f12    26 FUNC    LOCAL  DEFAULT    1 _clear
+    32: 0000000040201f2c    40 FUNC    LOCAL  DEFAULT    1 _is_free
+    33: 0000000040201f54    50 FUNC    LOCAL  DEFAULT    1 _set_flag
+    34: 0000000040201f86    40 FUNC    LOCAL  DEFAULT    1 _is_last
+    35: 0000000040201fae    46 FUNC    LOCAL  DEFAULT    1 _align_page
+    36: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS sched.c
+    37: 00000000402023ae    26 FUNC    LOCAL  DEFAULT    1 w_sscratch
+    38: 00000000402023c8    26 FUNC    LOCAL  DEFAULT    1 r_sie
+    39: 00000000402023e2    26 FUNC    LOCAL  DEFAULT    1 w_sie
+    40: 00000000402023fc    26 FUNC    LOCAL  DEFAULT    1 r_sip
+    41: 0000000040202416    26 FUNC    LOCAL  DEFAULT    1 w_sip
+    42: 0000000040207608     4 OBJECT  LOCAL  DEFAULT    4 _top
+    43: 0000000040204000     4 OBJECT  LOCAL  DEFAULT    3 _current
+    44: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS user.c
+    45: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS trap.c
+    46: 000000004020269a    26 FUNC    LOCAL  DEFAULT    1 w_stvec
+    47: 00000000402026b4    26 FUNC    LOCAL  DEFAULT    1 r_sip
+    48: 00000000402026ce    26 FUNC    LOCAL  DEFAULT    1 w_sip
+    49: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS plic.c
+    50: 00000000402028a2    24 FUNC    LOCAL  DEFAULT    1 r_tp
+    51: 00000000402028ba    26 FUNC    LOCAL  DEFAULT    1 r_sie
+    52: 00000000402028d4    26 FUNC    LOCAL  DEFAULT    1 w_sie
+    53: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS timer.c
+    54: 0000000040202ade    26 FUNC    LOCAL  DEFAULT    1 r_sie
+    55: 0000000040202af8    26 FUNC    LOCAL  DEFAULT    1 w_sie
+    56: 0000000040207610     4 OBJECT  LOCAL  DEFAULT    4 _tick
+    57: 0000000040207618   240 OBJECT  LOCAL  DEFAULT    4 timer_list
+    58: 0000000040202cd0   134 FUNC    LOCAL  DEFAULT    1 timer_check
+    59: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS lock.c
+    60: 0000000040202dae    26 FUNC    LOCAL  DEFAULT    1 r_sstatus
+    61: 0000000040202dc8    26 FUNC    LOCAL  DEFAULT    1 w_sstatus
+    62: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS syscall.c
+    63: 0000000040202e28    26 FUNC    LOCAL  DEFAULT    1 r_mhartid
+    64: 0000000040202b12    32 FUNC    GLOBAL DEFAULT    1 timer_load
+    65: 0000000040200000     0 NOTYPE  GLOBAL DEFAULT    1 entry
+    66: 0000000040201e8c    88 FUNC    GLOBAL DEFAULT    1 printf
+    67: 00000000402030b8     0 NOTYPE  GLOBAL DEFAULT    2 BSS_END
+    68: 0000000040202a66    58 FUNC    GLOBAL DEFAULT    1 plic_claim
+    69: 0000000040202aa0    62 FUNC    GLOBAL DEFAULT    1 plic_complete
+    70: 00000000402030b0     0 NOTYPE  GLOBAL DEFAULT    2 BSS_START
+    71: 000000004020306a     0 NOTYPE  GLOBAL DEFAULT    1 _text_end
+    72: 0000000040201746     0 NOTYPE  GLOBAL DEFAULT    1 gethid
+    73: 0000000040202ba4   188 FUNC    GLOBAL DEFAULT    1 timer_create
+    74: 0000000040204408 10240 OBJECT  GLOBAL DEFAULT    4 task_stack
+    75: 0000000040202170   324 FUNC    GLOBAL DEFAULT    1 page_alloc
+    76: 0000000040202d56    88 FUNC    GLOBAL DEFAULT    1 timer_handler
+    77: 0000000040203568     0 NOTYPE  GLOBAL DEFAULT    2 _rodata_end
+    78: 0000000040203088     0 NOTYPE  GLOBAL DEFAULT    2 TEXT_END
+    79: 0000000040203098     0 NOTYPE  GLOBAL DEFAULT    2 DATA_END
+    80: 0000000040202c60   112 FUNC    GLOBAL DEFAULT    1 timer_delete
+    81: 0000000040203080     0 NOTYPE  GLOBAL DEFAULT    2 TEXT_START
+    82: 000000004020256a    34 FUNC    GLOBAL DEFAULT    1 task_yield
+    83: 0000000040204008     0 NOTYPE  GLOBAL DEFAULT    4 _bss_start
+    84: 0000000240000000     0 NOTYPE  GLOBAL DEFAULT  ABS _memory_end
+    85: 0000000040200000     0 NOTYPE  GLOBAL DEFAULT    1 _text_start
+    86: 0000000040202670    42 FUNC    GLOBAL DEFAULT    1 os_main
+    87: 0000000040202458   124 FUNC    GLOBAL DEFAULT    1 schedule
+    88: 00000000402016b0     0 NOTYPE  GLOBAL DEFAULT    1 switch_to
+    89: 0000000040207708     0 NOTYPE  GLOBAL DEFAULT    4 _bss_end
+    90: 000000004020193c    58 FUNC    GLOBAL DEFAULT    1 uart_puts
+    91: 0000000040200000     0 NOTYPE  GLOBAL DEFAULT  ABS BASE_ADDRESS
+    92: 0000000040207708     0 NOTYPE  GLOBAL DEFAULT    4 _heap_start
+    93: 0000000040202766   278 FUNC    GLOBAL DEFAULT    1 trap_handler
+    94: 0000000040202b32   114 FUNC    GLOBAL DEFAULT    1 timer_init
+    95: 00000000402030a8     0 NOTYPE  GLOBAL DEFAULT    2 RODATA_END
+    96: 00000000402019a6    66 FUNC    GLOBAL DEFAULT    1 uart_isr
+    97: 0000000040000000     0 NOTYPE  GLOBAL DEFAULT  ABS RAM_START
+    98: 0000000040202e84   486 FUNC    GLOBAL DEFAULT    1 do_syscall
+    99: 0000000040203078     0 NOTYPE  GLOBAL DEFAULT    2 HEAP_SIZE
+   100: 00000000402018cc    50 FUNC    GLOBAL DEFAULT    1 uart_init
+   101: 00000000402025ce   118 FUNC    GLOBAL DEFAULT    1 user_task0
+   102: 0000000040204000     0 NOTYPE  GLOBAL DEFAULT    3 _data_start
+   103: 0000000040202708    94 FUNC    GLOBAL DEFAULT    1 external_interrupt_handler
+   104: 0000000040201ee4    46 FUNC    GLOBAL DEFAULT    1 panic
+   105: 000000004020258c    66 FUNC    GLOBAL DEFAULT    1 task_delay
+   106: 00000000402024d4   150 FUNC    GLOBAL DEFAULT    1 task_create
+   107: 0000000040204004     0 NOTYPE  GLOBAL DEFAULT    3 _data_end
+   108: 000000004020174e    32 FUNC    GLOBAL DEFAULT    1 sbi_putchar
+   109: 0000000040201976    48 FUNC    GLOBAL DEFAULT    1 uart_getc
+   110: 00000000402017a8   174 FUNC    GLOBAL DEFAULT    1 start_kernel
+   111: 00000000402018fe    62 FUNC    GLOBAL DEFAULT    1 uart_putc
+   112: 00000000402022b4   146 FUNC    GLOBAL DEFAULT    1 page_free
+   113: 000000004020287c    38 FUNC    GLOBAL DEFAULT    1 trap_test
+   114: 0000000040202e04    36 FUNC    GLOBAL DEFAULT    1 spin_unlock
+   115: 000000004020176e    58 FUNC    GLOBAL DEFAULT    1 sbi_puts
+   116: 0000000040203070     0 NOTYPE  GLOBAL DEFAULT    2 _rodata_start
+   117: 0000000040201580     0 NOTYPE  GLOBAL DEFAULT    1 trap_vector
+   118: 0000000040202de2    34 FUNC    GLOBAL DEFAULT    1 spin_lock
+   119: 00000000402030a0     0 NOTYPE  GLOBAL DEFAULT    2 RODATA_START
+   120: 0000000040202346   104 FUNC    GLOBAL DEFAULT    1 page_test
+   121: 0000000040202644    44 FUNC    GLOBAL DEFAULT    1 user_task1
+   122: 0000000040203090     0 NOTYPE  GLOBAL DEFAULT    2 DATA_START
+   123: 0000000040202430    40 FUNC    GLOBAL DEFAULT    1 sched_init
+   124: 0000000040201fdc   404 FUNC    GLOBAL DEFAULT    1 page_init
+   125: 00000000402026e8    32 FUNC    GLOBAL DEFAULT    1 trap_init
+   126: 0000000200000000     0 NOTYPE  GLOBAL DEFAULT  ABS RAM_LENGHT
+   127: 0000000040203070     0 NOTYPE  GLOBAL DEFAULT    2 HEAP_START
+   128: 0000000040206c08  2560 OBJECT  GLOBAL DEFAULT    4 ctx_tasks
+   129: 0000000040202e42    66 FUNC    GLOBAL DEFAULT    1 sys_gethid
+   130: 00000001ffdf88f8     0 NOTYPE  GLOBAL DEFAULT  ABS _heap_size
+   131: 00000000402028ee   376 FUNC    GLOBAL DEFAULT    1 plic_init
+
+No version information found in this file.
+Attribute Section: riscv
+File Attributes
+  Tag_RISCV_stack_align: 16-bytes
+  Tag_RISCV_arch: "rv64i2p0_m2p0_a2p0_f2p0_c2p0"
+  Tag_RISCV_priv_spec: 1
+  Tag_RISCV_priv_spec_minor: 11

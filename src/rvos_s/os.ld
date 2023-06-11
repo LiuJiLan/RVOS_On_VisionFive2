@@ -82,7 +82,7 @@ MEMORY
  * the CURRENT location ('.' = current memory location). This current memory
  * location moves as we add things.
  */
- RAM_START = 0x80000000;
+ RAM_START = 0x40000000;
  RAM_LENGHT = 0x200000000;
  BASE_ADDRESS = RAM_START + 0x200000;
 SECTIONS
