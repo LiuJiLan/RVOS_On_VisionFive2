@@ -3,7 +3,7 @@
 void plic_init(void)
 {
 	int hart = r_tp();
-  
+
 	/* 
 	 * Set priority for UART0.
 	 *
@@ -39,6 +39,8 @@ void plic_init(void)
 				}
 			}
 			printf("\n");
+		} else {
+			printf("None!\n");
 		}
 	}
 	
@@ -87,6 +89,7 @@ void plic_init(void)
 int plic_claim(void)
 {
 	int hart = r_tp();
+	printf("Check plic hart:%d\n", hart);
 	int irq = *(uint32_t*)PLIC_SCLAIM(hart);
 	return irq;
 }

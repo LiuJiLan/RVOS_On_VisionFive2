@@ -39,6 +39,8 @@ void plic_init(void)
 				}
 			}
 			printf("\n");
+		} else {
+			printf("None!\n");
 		}
 	}
 	
