@@ -3,7 +3,21 @@ RVOS在VisionFive2开发板上的移植。
 
 [RVOS项目Github地址](https://github.com/plctlab/riscv-operating-system-mooc)
 
-# 成果展示
+
+
+## 目录
+
+- M态RVOS在64位下的移植
+- 64位M态RVOS在VisionFive2开发板上的移植
+- 64位RVOS在VisionFive2开发板上S态的移植
+
+
+
+# M态RVOS
+
+
+
+## 成果展示
 
 ![截屏2023-04-23 20.38.31](./asset/screenshot.png)
 
@@ -49,7 +63,7 @@ timer interruption!
 
 
 
-# 板子参数
+## 板子参数
 
 CPU: JH7110 
 
@@ -61,13 +75,13 @@ UART: 8250芯片兼容
 
 
 
-# 移植思路
+## 移植思路
 
 对于一块板子, 尤其是这块板子比较新的时候。资料会散布在各个位置, 需要扫读能找到的所有资料, 大致了解你现在能知道什么, 并对每个信息的位置有个模糊的记忆。这对后期具体移植工作是有帮助的。
 
 
 
-## CPU相关移植
+### CPU相关移植
 
 RV32至RV64, 这个过程推荐在QEMU上完成。
 
@@ -79,7 +93,7 @@ PS: 由于QEMU所模拟的芯片为SiFive旗下的FU540, 所以CLINT和PLIC部�
 
 
 
-## 有关mtime频率
+### 有关mtime频率
 
 关于mtime, 在CPU手册的**6.11.1 Timer Register**节中提到:
 
@@ -97,7 +111,7 @@ cpus {
 
 
 
-## 启动流程
+### 启动流程
 
 1. 对启动流程的研究是向具体开发板移植的第一步。参考了[昉·惊鸿7110启动手册](https://doc.rvspace.org/VisionFive2/Developing_and_Porting_Guide/JH7110_Boot_UG/index.html)。
 
@@ -141,7 +155,7 @@ cpus {
 
 
 
-## 外设(UART)移植
+### 外设(UART)移植
 
 1. 波特率
 
@@ -218,7 +232,7 @@ cpus {
 
 
 
-# 注意事项
+# M态移植中的注意事项
 
 
 
@@ -274,9 +288,616 @@ VisionFive2的UART启动时, 使用xmodem协议接收。MacOS使用brew下载min
 
 
 
+# S态RVOS
+
+
+
+## 成果展示
+
+在这里只展示U-Boot menu之后的部分:
+
+```shell
+U-Boot menu
+1:      Debian GNU/Linux bookworm/sid 5.15.0-starfive
+2:      Debian GNU/Linux bookworm/sid 5.15.0-starfive (rescue target)
+3:      RVOS-Hello
+4:      RVOS
+Enter choice: 4
+4:      RVOS
+Retrieving file: /rvos_image.bin
+16452 bytes read in 7 ms (2.2 MiB/s)
+Retrieving file: /dtbs/starfive/jh7110-visionfive-v2.dtb
+48366 bytes read in 9 ms (5.1 MiB/s)
+## Booting kernel from Legacy Image at 44000000 ...
+   Image Name:   
+   Image Type:   RISC-V Linux Kernel Image (uncompressed)
+   Data Size:    16388 Bytes = 16 KiB
+   Load Address: 40200000
+   Entry Point:  40200000
+   Verifying Checksum ... OK
+## Flattened Device Tree blob at 48000000
+   Booting using the fdt blob at 0x48000000
+   Loading Kernel Image
+   Using Device Tree in place at 0000000048000000, end 000000004800eced
+
+Starting kernel ...
+
+clk u2_dw_i2c_clk_core already disabled
+clk u2_dw_i2c_clk_apb already disabled
+clk u5_dw_i2c_clk_core already disabled
+clk u5_dw_i2c_clk_apb already disabled
+
+Hello, RVOS!
+
+Hart ID: 1
+DTB is at 0000000048000000
+sstatus:8000000200006000
+HEAP_START = 0000000040207710, HEAP_SIZE = 00000001ffdf88f0, num of pages = 2096624
+TEXT:   0x0000000040200000 -> 0x0000000040202fc8
+RODATA: 0x0000000040202fc8 -> 0x00000000402034e0
+DATA:   0x0000000040204000 -> 0x0000000040204004
+BSS:    0x0000000040204008 -> 0x0000000040207710
+HEAP:   0x0000000040210000 -> 0x0000000240000000
+
+The following interrupts are already enabled before we set them:
+PLIC Enable Register 0: None!
+PLIC Enable Register 1: None!
+PLIC Enable Register 2: None!
+PLIC Enable Register 3: None!
+PLIC Enable Register 4: None!
+We will disable them all. And then, only enable UART0.
+
+timer interruption!
+tick: 1
+timer interruption!
+tick: 2
+timer interruption!
+tick: 3
+timer interruption!
+tick: 4
+timer interruption!
+tick: 5
+Task 1: Created!
+Task 1: Running... 
+timer interruption!
+tick: 6
+Task 0: Created!
+Sync exceptions!, code = 8
+System call from U-mode!
+--> sys_gethid, arg0 = 0x00000000402047e8
+system call returned!, hart id is 1
+Task 0: Running... 
+timer interruption!
+tick: 7
+timer interruption!
+tick: 8
+Task 0: Running... 
+timer interruption!
+tick: 9
+Task 1: Running... 
+timer interruption!
+tick: 10
+Task 0: Running... 
+timer interruption!
+tick: 11
+Task 1: Running... 
+timer interruption!
+tick: 12
+timer interruption!
+tick: 13
+Task 1: Running... 
+timer interruption!
+tick: 14
+Task 0: Running... 
+timer interruption!
+tick: 15
+timer interruption!
+tick: 16
+Task 0: Running... 
+timer interruption!
+tick: 17
+```
+
+PS: 有一段密集的时钟中断, 是由于SBI对时钟中断的处理用的是绝对时间点导致的, 我还没有想好怎么处理这个问题。
+
+
+
 ## 有关U-Boot引导下的S态启动
 
-官方的指导中有一点没说清楚, extlinux在SD卡第三分区中, 现在已经做到了通关U-Boot的启动选择菜单正确的引导了一个`Hello RVOS`的简易demo。S态RVOS完整移植我有时间来写一写。
+官方的指导中有一点没说清楚, 应该设置的extlinux在SD卡第三分区中。
+
+
+
+## 有关SBI TIMER的参数问题(在此只讨论openSBI)
+
+首先, 至少在我所看的这版openSBI源码中, Legacy Extensions中的Set Timer和Timer Extension的Set Timer本质用的是同一代码。
+
+在我使用的 Version 1.0.0, March 22, 2022: Ratified 版本的 sbi-doc 中, Legacy Extensions中的Set Timer和Timer Extension的Set Timer只在后者的说明中强调了“**stime_value** is in absolute time.”。我个人在此之前一直以为“Programs the clock for next event after **stime_value** time.”这段意味着stime_value是一个时间段, 但这个理解是错误的, **stime_value**应该是时间点。
+
+
+
+## 有关SBI TIMER的具体实现问题(在此只讨论openSBI)
+
+本问题本质上是上一问题的延续。其主要讨论**stime_value**是直接作用在`xtimecmp`上的还是说会在第一次调用时为0起点来处理。PS: 这里使用`xtimecmp`而非`mtimecmp`是因为openSBI代码中已经明确有处理`stimecmp`的情况。
+
+另外openSBI的具体实现如下(注意两者本质上是一个函数, 我们这里就以Legacy Extensions中的Set Timer为例):
+
+```c
+	case SBI_EXT_0_1_SET_TIMER:
+#if __riscv_xlen == 32
+		sbi_timer_event_start((((u64)regs->a1 << 32) | (u64)regs->a0));
+#else
+		sbi_timer_event_start((u64)regs->a0);
+#endif
+		break;
+```
+
+`sbi_timer_event_start`的实现是:
+
+```c
+void sbi_timer_event_start(u64 next_event)
+{
+	sbi_pmu_ctr_incr_fw(SBI_PMU_FW_SET_TIMER);
+
+	/**
+	 * Update the stimecmp directly if available. This allows
+	 * the older software to leverage sstc extension on newer hardware.
+	 */
+	if (sbi_hart_has_extension(sbi_scratch_thishart_ptr(), SBI_HART_EXT_SSTC)) {
+#if __riscv_xlen == 32
+		csr_write(CSR_STIMECMP, next_event & 0xFFFFFFFF);
+		csr_write(CSR_STIMECMPH, next_event >> 32);
+#else
+		csr_write(CSR_STIMECMP, next_event);
+#endif
+	} else if (timer_dev && timer_dev->timer_event_start) {
+		timer_dev->timer_event_start(next_event);
+		csr_clear(CSR_MIP, MIP_STIP);
+	}
+	csr_set(CSR_MIE, MIP_MTIP);
+}
+```
+
+从这里可以看出, 如果有`stimecmp`实现的话, 是直接写入`stimecmp`。
+
+`timer_event_start`是`sbi_timer_device`类的方法。*(PS: C语言是确实存在类的概念的, 例如Linux的VFS实现)*
+
+而对于我们的板子我推测使用的是以下实例:
+
+```c
+static struct sbi_timer_device mtimer = {
+	.name = "aclint-mtimer",
+	.timer_value = mtimer_value,
+	.timer_event_start = mtimer_event_start,
+	.timer_event_stop = mtimer_event_stop
+};
+```
+
+对应的具体方法是:
+
+```c
+static void mtimer_event_start(u64 next_event)
+{
+	u32 target_hart = current_hartid();
+	struct sbi_scratch *scratch;
+	struct aclint_mtimer_data *mt;
+	u64 *time_cmp;
+
+	scratch = sbi_hartid_to_scratch(target_hart);
+	if (!scratch)
+		return;
+
+	mt = mtimer_get_hart_data_ptr(scratch);
+	if (!mt)
+		return;
+
+	/* Program MTIMER Time Compare */
+	time_cmp = (void *)mt->mtimecmp_addr;
+	mt->time_wr(true, next_event,
+		    &time_cmp[target_hart - mt->first_hartid]);
+}
+```
+
+其中, `struct aclint_mtimer_data `的原型是:
+
+```c
+struct aclint_mtimer_data {
+	/* Public details */
+	unsigned long mtime_freq;
+	unsigned long mtime_addr;
+	unsigned long mtime_size;
+	unsigned long mtimecmp_addr;
+	unsigned long mtimecmp_size;
+	u32 first_hartid;
+	u32 hart_count;
+	bool has_64bit_mmio;
+	bool has_shared_mtime;
+	/* Private details (initialized and used by ACLINT MTIMER library) */
+	struct aclint_mtimer_data *time_delta_reference;
+	unsigned long time_delta_computed;
+	u64 (*time_rd)(volatile u64 *addr);
+	void (*time_wr)(bool timecmp, u64 value, volatile u64 *addr);
+};
+```
+
+在`aclint_mtimer_cold_init`中我们能看到`mt->time_wr`的具体实现:
+
+```c
+int aclint_mtimer_cold_init(struct aclint_mtimer_data *mt,
+			    struct aclint_mtimer_data *reference)
+{
+	u32 i;
+	int rc;
+	struct sbi_scratch *scratch;
+
+	/* Sanity checks */
+	if (!mt ||
+	    (mt->hart_count && !mt->mtimecmp_size) ||
+	    (mt->mtime_size && (mt->mtime_addr & (ACLINT_MTIMER_ALIGN - 1))) ||
+	    (mt->mtime_size && (mt->mtime_size & (ACLINT_MTIMER_ALIGN - 1))) ||
+	    (mt->mtimecmp_addr & (ACLINT_MTIMER_ALIGN - 1)) ||
+	    (mt->mtimecmp_size & (ACLINT_MTIMER_ALIGN - 1)) ||
+	    (mt->hart_count > ACLINT_MTIMER_MAX_HARTS))
+		return SBI_EINVAL;
+	if (reference && mt->mtime_freq != reference->mtime_freq)
+		return SBI_EINVAL;
+
+	/* Allocate scratch space pointer */
+	if (!mtimer_ptr_offset) {
+		mtimer_ptr_offset = sbi_scratch_alloc_type_offset(void *);
+		if (!mtimer_ptr_offset)
+			return SBI_ENOMEM;
+	}
+
+	/* Initialize private data */
+	aclint_mtimer_set_reference(mt, reference);
+	mt->time_rd = mtimer_time_rd32;
+	mt->time_wr = mtimer_time_wr32;
+
+	/* Override read/write accessors for 64bit MMIO */
+#if __riscv_xlen != 32
+	if (mt->has_64bit_mmio) {
+		mt->time_rd = mtimer_time_rd64;
+		mt->time_wr = mtimer_time_wr64;
+	}
+#endif
+  ...
+```
+
+更进一步:
+
+```c
+static void mtimer_time_wr64(bool timecmp, u64 value, volatile u64 *addr)
+{
+	writeq_relaxed(value, addr);
+}
+```
+
+再根据之前`mt->time_wr(true, next_event, &time_cmp[target_hart - mt->first_hartid]);`不难得出, 本质上是对`mtimecmp`的直接写入。
+
+**综上所述**, **stime_value**是直接作用在`xtimecmp`上的。
+
+
+
+## 有关第一次用SBI TIMER设置S态时钟中断的问题
+
+从上个问题可以看出, **stime_value**是直接作用在`xtimecmp`上的。
+
+那么对于只有`mtimecmp`的CPU来说, 在S态中第一次设置中断就是一个问题。
+
+我现在的解决方案是先维护一个软件的`stime`, 并初始化为0, 每次设置`stime+=interval;`。这样做的后果就是当实际设置的时间点大于`mtime`之前, 会导致一连串密集的时钟中断。
+
+我暂时没有想到什么好的设置第一次时钟中断的方法。
+
+
+
+# 有关JTAG
+
+
+
+## JTAG的存在
+
+有关VisionFive2的JTAG有其实StarFive官方没有明说, 但是其实是存在的。
+
+参考论坛中的的[这篇文章](https://forum.rvspace.org/t/jtag-ports/890), 注意这篇文章中有关JTAG的GPIO引脚还是有些模糊的。
+
+我们可以看这篇文章其中提到的[U-Boot源码](https://github.com/starfive-tech/u-boot/blob/JH7110_VisionFive2_devel/board/starfive/visionfive2/starfive_visionfive2.c), 其中提到:
+
+```c
+static void jh7110_jtag_init(void)
+{
+	/*jtag*/
+	SYS_IOMUX_DOEN(36, HIGH);
+	SYS_IOMUX_DIN(36, 4);
+	SYS_IOMUX_DOEN(61, HIGH);
+	SYS_IOMUX_DIN(61, 19);
+	SYS_IOMUX_DOEN(63, HIGH);
+	SYS_IOMUX_DIN(63, 20);
+	SYS_IOMUX_DOEN(60, HIGH);
+	SYS_IOMUX_DIN(60, 29);
+	SYS_IOMUX_DOEN(44, 8);
+	SYS_IOMUX_DOUT(44, 22);
+}
+```
+
+而`jh7110_jtag_init`位于`board_init`:
+
+```c
+int board_init(void)
+{
+	enable_caches();
+
+	jh7110_jtag_init();
+	jh7110_timer_init();
+
+	jh7110_usb_init(true);
+
+	jh7110_i2c_init(5);
+	jh7110_gpio_init();
+
+	return 0;
+}
+```
+
+我不知道这个函数是否被囊括在SPL中, 于是查了一下, 在[SPL的代码](https://github.com/starfive-tech/u-boot/blob/b6e2b0e85c774a18ae668223a6e5f7d335895243/board/starfive/visionfive2/spl.c)中也有JTAG的初始化部分:
+
+```c
+	/*jtag*/
+	SYS_IOMUX_DOEN(36, HIGH);
+	SYS_IOMUX_DIN(36, 4);
+	SYS_IOMUX_DOEN(61, HIGH);
+	SYS_IOMUX_DIN(61, 19);
+	SYS_IOMUX_DOEN(63, HIGH);
+	SYS_IOMUX_DIN(63, 20);
+	SYS_IOMUX_DOEN(60, HIGH);
+	SYS_IOMUX_DIN(60, 29);
+	SYS_IOMUX_DOEN(44, 8);
+	SYS_IOMUX_DOUT(44, 22);
+```
+
+**既然如此便意味着在SPL段便可以使用JTAG**。这对使用JTAG大有益处,  因为在VisionFive2的启动流程下, 其实第二段U-Boot使用的地址和内核理论上是一致的, 如果在第二段U-Boot才能使用JTAG, 对于断点之类的设置是一大麻烦。
+
+
+
+## SEGGER JLINK
+
+
+
+ ### 对U74-MC的支持
+
+SEGGER官方已经支持了U74-MC, 注意把JLINK软件升级到最新(或者支持的版本之后)即可。
+
+
+
+### 两个未知设备
+
+StarFive在设计JH7110的时候可能根本没想过有人会做特别底层的DEBUG, 以至于JH7110中的U74-MC和E24的DeviceID都是一模一样的:
+
+```shell
+TotalIRLen = 10, IRPrint = 0x0021
+JTAG chain detection found 2 devices:
+#0 Id: 0x07110CFD, IRLen: 05, Unknown device
+#1 Id: 0x07110CFD, IRLen: 05, Unknown device
+```
+
+很幸运的是, SEGGER官方在[这里](https://wiki.segger.com/J-Link_RISC-V)说明了这种情况。注意, #0应该是E24, 而#1才是U74-MC。
+
+注意使用WiKi中的[Template_ConnectTAP1.JLinkScript](https://wiki.segger.com/images/b/b6/Template_ConnectTAP1.JLinkScript)来选择TAP1以访问U74-MC。
+
+
+
+## SEGGER OZONE HART选择问题
+
+
+
+### 选择的原理
+
+参照[RISC-V官方有关DEBUG的文档](https://github.com/riscv/riscv-debug-spec), 并结合U74-MC的文档查看。
+
+对`DMI`下`dmcontrol`中的`hartsel`进行读写操作。注意, 官方手册中`hartsel`由`hartsello`和`hartselhi`构成。但U74-MC没有使用`hartselhi`, `hartsel`就位于`hartsello`处。
+
+
+
+### 实际遇到的选hart问题
+
+但是即使在JLINK SCRIPT下操作了, 检查hartid依旧处于0号hart。
+
+由于openOCD能正常使用, 我还特地去看了openOCD有关RISC-V选HART的部分的源代码, 发现**底层实现是一样的**。所以我怀疑是OZONE的软件问题, 毕竟它读的`zero`寄存器都不是0。
+
+论坛中有人给出了openOCD用的`config.tcl`的代码, 在[这里](https://forum.rvspace.org/t/openocd-config-for-visionfive-2/1452)。
+
+通过`openocd -f config.tcl `运行, 注意, 代码中没有包含adapter的部分, 这部分根据自己的adapter来写, 例如我用的SEGGER JLINK V11, 完整代码为:
+
+```
+# config.tcl
+
+adapter driver jlink
+
+reset_config trst_only
+
+transport select jtag
+
+adapter speed 4000
+
+jtag newtap e24 cpu -irlen 5 -expected-id 0x07110cfd
+jtag newtap u74 cpu -irlen 5 -expected-id 0x07110cfd
+
+#target create e24.cpu0 riscv -chain-position e24.cpu -coreid 0
+target create u74.cpu0 riscv -chain-position u74.cpu -coreid 0 -rtos hwthread
+target create u74.cpu1 riscv -chain-position u74.cpu -coreid 1
+target create u74.cpu2 riscv -chain-position u74.cpu -coreid 2
+target create u74.cpu3 riscv -chain-position u74.cpu -coreid 3
+target create u74.cpu4 riscv -chain-position u74.cpu -coreid 4
+target smp u74.cpu0 u74.cpu1 u74.cpu2 u74.cpu3 u74.cpu4
+
+init
+```
+
+另外我也给出我的JLINK SCRIPT脚本, 改动于[这个脚本](https://forum.segger.com/index.php/Thread/9008-Risc-V-core-hart-selection/):
+
+```c
+int InitTarget(void)
+{
+    //
+    // TDI -> TAP_#1 -> TAP_#0 -> TDO
+    //
+    // TAP_#0 info:
+    //   Maybe E24?
+    //   IRLen: 5
+    //
+    // TAP_#1 info:
+    //   U74-MC here
+    //   IRLen: 5
+    //
+    //
+    // Code to connect to TAP_#1
+    //
+    int tap;
+    tap = 1;
+    if (tap) {
+        JLINK_JTAG_DRPre  = 1;
+        JLINK_JTAG_DRPost = 0;
+        JLINK_JTAG_IRPre  = 5;
+        JLINK_JTAG_IRPost = 0;
+        JLINK_JTAG_IRLen  = 5;
+    } else {
+        JLINK_JTAG_DRPre  = 0;
+        JLINK_JTAG_DRPost = 1;
+        JLINK_JTAG_IRPre  = 0;
+        JLINK_JTAG_IRPost = 5;
+        JLINK_JTAG_IRLen  = 5;
+    }
+    JLINK_SetDevice("U74-MC");
+    return 0;
+}
+
+ // Select needed hart
+ // Seems Jlink could not handle multi-core debugging at the same time through script file?
+ // Or there exists some APIs not written in official wiki that could handle this?
+ int SetupTarget(void)
+ {
+ int ret;
+ 
+ U32 dmcontrol_addr;
+ U32 hawindow_addr;
+ 
+ U32 hasel_mask;
+ U32 hartsello_mask;
+ U32 hartselhi_mask;
+ U32 hartsel_mask;
+ 
+ U32 dmcontrol_value;
+ U32 hawindow_value;
+ U32 hart_id;
+ U32 hart_id_target;
+ 
+ // Set wanted hart id here(0 is S7 core, 1~4 is U74 core)
+ hart_id = 1;
+ 
+ ret = 0;
+ hasel_mask = 0x04000000;
+ dmcontrol_addr = 0x10;
+ hawindow_addr = 0x15;
+ hartsel_mask = 0x03FF0000;
+ 
+ // Core selection through writing DMI registers
+ 
+ // First, do automatic configure
+ // Needed or connection would fail
+ ret = JLINK_RISCV_DMI_AutodetectDMISettings();
+ if(ret < 0)
+ {
+ return ret;
+ }
+ ret = JLINK_RISCV_DMI_ReadReg(dmcontrol_addr, &dmcontrol_value);
+ if(ret < 0)
+ {
+ return ret;
+ }
+ hart_id_target = (dmcontrol_value & hartsel_mask) >> 16;
+ JLINK_SYS_Report("********************************");
+ JLINK_SYS_Report("Pre-selection info");
+ JLINK_SYS_Report1("dmcontrol value is: ", dmcontrol_value);
+ JLINK_SYS_Report1("Current hart id is: ", hart_id_target);
+ JLINK_SYS_Report("********************************");
+ 
+ // Third, modify dmcontrol value to select wanted hart.
+ //dmcontrol_value = (dmcontrol_value & ~0x03FF0000) | (hart_id << 16) | hasel_mask;
+ dmcontrol_value = (dmcontrol_value & ~0x03FF0000) | (hart_id << 16);
+ ret = JLINK_RISCV_DMI_WriteReg(dmcontrol_addr, dmcontrol_value);
+ if(ret < 0)
+ {
+ return ret;
+ }
+ 
+ // Fourth, check if configure is successful
+ ret = JLINK_RISCV_DMI_ReadReg(dmcontrol_addr, &dmcontrol_value);
+ hart_id_target = (dmcontrol_value & hartsel_mask) >> 16;
+ JLINK_SYS_Report("********************************");
+ JLINK_SYS_Report("Post-selection info");
+ JLINK_SYS_Report1("dmcontrol value is: ", dmcontrol_value);
+ JLINK_SYS_Report1("Current hart id is: ", hart_id_target);
+ JLINK_SYS_Report("********************************");
+ 
+ return ret;
+ }
+```
+
+
+
+### 我最终用来DEBUG的方法
+
+我利用SBI Legacy的putchar打印了一些信息, 发现我当时连C函数都没有进。于是我怀疑是`sp`寄存器有问题季候风然后我用一段汇编来打印出来寄存器, 然后自己写了个小的程序用于解读。
+
+汇编代码片段如下:
+
+```assembly
+		csrr t0, stval # 或者 mv t0, sp 等	 # 此处为打印的目标
+		li t1, 0x0F
+		li t2, 16
+	
+2:	beqz t2, 3f
+		and t3, t0, t1
+		addi a0, t3, 0x41
+		li   a7, 0x01
+		ecall
+		srli t0, t0, 4
+		addi t2, t2, -1
+		j 2b
+3:	li a0, 0x0A	# 打一个回车, 方便查看
+		li   a7, 0x01
+		ecall
+```
+
+解读用的小程序的C代码:
+
+```c
+#include <stdio.h>
+
+int main(int argc, const char * argv[]) {
+    char a[17] = {};
+    while (1) {
+        printf("Enter:");
+        scanf("%s", a);
+        for(int i = 15; i >= 0; i--){
+            printf("%1X", a[i]-'A');
+        }
+        printf("\n");
+        printf("\n");
+    }  
+}
+```
+
+例如, 用此方法读出的`sstatus`是`AAAGAAAACAAAAAAI`, 解读如下:
+
+```shell
+Enter:AAAGAAAACAAAAAAI
+8000000200006000
+```
+
+*之后再来研究怎么用这些硬件debug工具好了。我已经不知道插拔了多少次SD卡了, 希望之后我能高效优雅的debug。*
+
+
 
 # 致谢
 
