@@ -5,11 +5,27 @@ RVOS在VisionFive2开发板上的移植。
 
 
 
-## 目录
+## 成果
 
 - M态RVOS在64位下的移植
 - 64位M态RVOS在VisionFive2开发板上的移植
 - 64位RVOS在VisionFive2开发板上S态的移植
+
+
+
+## 小记
+
+在StarFive的论坛里看到疑似StarFive官方的人说“底层的FW我们都已经调试好了，开发者基本不需要动这些”。
+
+如果ta真是StarFive官方, 我希望官方要知道, 还是有很多人想去做底层。
+
+相比于JH7100的VisionFive, JH7110的VisionFive2很多方面没有开源。例如, 对运行在SRAM上的SPL做处理的`spl_tool`工具和将OpenSBI + Uboot打包的`uboot_its`工具。
+
+By the way, 其实启动用的SRAM大小官方也没提。
+
+尽管如此, 我们还是在官方给出的各种资料中搜刮着有用信息。
+
+希望官方能在合理范围内, 更大方的给出更多的信息。毕竟, 还有有人想写自己的BootLoader, 想写自己的SBI, 想写自己的Kernel...
 
 
 
