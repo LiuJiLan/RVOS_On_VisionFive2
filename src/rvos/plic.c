@@ -56,7 +56,7 @@ void plic_init(void)
 	 * bit in the enables registers.
 	 */
 	 
-	*(uint32_t*)PLIC_MENABLE(hart, UART0_IRQ)= 1;
+	*(uint32_t*)PLIC_MENABLE(hart, UART0_IRQ)= 0x1 << UART0_IRQ % 32;
 
 	/* 
 	 * Set priority threshold for UART0.
