@@ -65,6 +65,18 @@ static inline reg_t r_mepc()
 	return x;
 }
 
+static inline void w_sepc(reg_t x)
+{
+	asm volatile("csrw sepc, %0" : : "r" (x));
+}
+
+static inline reg_t r_sepc()
+{
+	reg_t x;
+	asm volatile("csrr %0, sepc" : "=r" (x));
+	return x;
+}
+
 /* Machine Scratch register, for early trap handler */
 static inline void w_sscratch(reg_t x)
 {
@@ -118,6 +130,24 @@ static inline reg_t r_scause()
 {
 	reg_t x;
 	asm volatile("csrr %0, scause" : "=r" (x) );
+	return x;
+}
+
+static inline reg_t r_stval()
+{
+	reg_t x;
+	asm volatile("csrr %0, stval" : "=r" (x) );
+	return x;
+}
+
+// 此MTIME非CLINT的那个MMIO的MTIME, 是Unprivileged and User-Level CSR
+// 供SBI使用
+// 在https://github.com/riscv-software-src/opensbi/blob/v1.2/include/sbi/riscv_encoding.h#L247
+// SBI版本更新可能会不在这一行
+static inline reg_t r_mtime()
+{
+	reg_t x;
+	asm volatile("csrr %0, 0x0C01" : "=r" (x) );
 	return x;
 }
 

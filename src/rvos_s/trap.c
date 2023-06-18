@@ -78,6 +78,7 @@ reg_t trap_handler(reg_t epc, reg_t cause, struct context *cxt)
 			return_pc += 4;
 			break;
 		default:
+			printf("sepc = %x; stval = %x\n", r_sepc(), r_stval());
 			panic("OOPS! What can I do!");
 			//return_pc += 4;
 		}
