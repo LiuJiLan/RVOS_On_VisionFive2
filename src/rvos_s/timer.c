@@ -3,7 +3,8 @@
 extern void schedule(void);
 
 /* interval ~= 1s */
-#define TIMER_INTERVAL CLINT_TIMEBASE_FREQ
+#define HZ 1
+#define TIMER_INTERVAL CLINT_TIMEBASE_FREQ / HZ
 
 //static uint64_t stime = 0;
 static uint32_t _tick = 0;

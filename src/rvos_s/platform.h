@@ -34,8 +34,11 @@
  *     ......
  * };
  */
-//#define UART0_IRQ 10
+#ifdef QEMU
+#define UART0_IRQ 10
+#else
 #define UART0_IRQ 32
+#endif
 
 /*
  * This machine puts platform-level interrupt controller (PLIC) here.
@@ -57,6 +60,17 @@
 //  注意, SiFive的很多设计中, hart 0是没有S态的
 //  导致类似xenable在plic中是以hart 0 MENABLE、hart 1 MENABLE、hart 1 SENABLE
 //  如上分布的, 所以SiFive的很多MENABLE不能用线性的 k(hart) + b 表示
+#ifdef QEMU
+
+#define PLIC_BASE 0x0c000000UL
+#define PLIC_PRIORITY(id) (PLIC_BASE + (id) * 4)
+#define PLIC_PENDING(id) (PLIC_BASE + 0x1000 + ((id) / 32) * 4)
+#define PLIC_SENABLE(hart, id) (PLIC_BASE + 0x2080 + (hart) * 0x100 + ((id) / 32) * 4)
+#define PLIC_STHRESHOLD(hart) (PLIC_BASE + 0x201000 + (hart) * 0x2000)
+#define PLIC_SCLAIM(hart) (PLIC_BASE + 0x201004 + (hart) * 0x2000)
+#define PLIC_SCOMPLETE(hart) (PLIC_BASE + 0x201004 + (hart) * 0x2000)
+
+#else
 
 #define PLIC_BASE 0x0c000000UL
 #define PLIC_PRIORITY(id) (PLIC_BASE + (id) * 4)
@@ -65,6 +79,8 @@
 #define PLIC_STHRESHOLD(hart) (PLIC_BASE + 0x200000 + (hart) * 0x2000)
 #define PLIC_SCLAIM(hart) (PLIC_BASE + 0x200004 + (hart) * 0x2000)
 #define PLIC_SCOMPLETE(hart) (PLIC_BASE + 0x200004 + (hart) * 0x2000)
+
+#endif
 
  /*
   * The Core Local INTerruptor (CLINT) block holds memory-mapped control and
@@ -98,6 +114,12 @@
 #define CLINT_MTIME (CLINT_BASE + 0xBFF8) // cycles since boot.
 
 /* 10000000 ticks per-second */
+#ifdef QEMU
+#define CLINT_TIMEBASE_FREQ 10000000UL
+#else
 #define CLINT_TIMEBASE_FREQ 4000000UL
+#endif
+
+
 
 #endif /* __PLATFORM_H__ */

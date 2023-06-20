@@ -1,12 +1,18 @@
 include ../common.mk
 
+QEMU_DEBUG = y
 SYSCALL = y
+
+LDS = os.ld
+
+ifeq (${QEMU_DEBUG}, y)
+CFLAGS += -D QEMU
+LDS = qemu.ld
+endif
 
 ifeq (${SYSCALL}, y)
 CFLAGS += -D CONFIG_SYSCALL
 endif
-
-#CFLAGS += -D QEMU
 
 SRCS_ASM = \
 	start.S \
@@ -35,7 +41,7 @@ all: rvos_image.bin
 
 # start.o must be the first in dependency!
 os.elf: ${OBJS}
-	${CC} ${CFLAGS} -T os.ld -o os.elf $^
+	${CC} ${CFLAGS} -T ${LDS} -o os.elf $^
 
 rvos_image.bin: os.elf
 	#riscv64-unknown-elf-objdump -S os.elf > kernel_dump.txt

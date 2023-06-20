@@ -601,9 +601,7 @@ static void mtimer_time_wr64(bool timecmp, u64 value, volatile u64 *addr)
 
 那么对于只有`mtimecmp`的CPU来说, 在S态中第一次设置中断就是一个问题。
 
-我现在的解决方案是先维护一个软件的`stime`, 并初始化为0, 每次设置`stime+=interval;`。这样做的后果就是当实际设置的时间点大于`mtime`之前, 会导致一连串密集的时钟中断。
-
-我暂时没有想到什么好的设置第一次时钟中断的方法。
+我们利用SBI的异常处理获得`mtime`。xv6-k210用的是`asm volatile("rdtime %0" : "=r" (x) );`。 而我选择改用`asm volatile("csrr %0, 0x0C01" : "=r" (x) );`, 这是从openSBI的[这里](https://github.com/riscv-software-src/opensbi/blob/master/lib/sbi/sbi_emulate_csr.c)去找`CSR_TIME`对应的宏。
 
 
 
