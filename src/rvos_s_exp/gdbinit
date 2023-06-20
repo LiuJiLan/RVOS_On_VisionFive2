@@ -1,0 +1,19 @@
+set disassemble-next-line on
+# b trap_vector
+target remote : 1234
+
+#b*0x80000000
+b*0x80200000
+b start_kernel
+
+
+c
+#b trap_handler
+#b task_delay
+
+display/z $mcause
+display/z $mtval
+display/z $mepc
+
+
+
