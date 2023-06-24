@@ -82,4 +82,6 @@ struct timer {
 extern struct timer *timer_create(void (*handler)(void *arg), void *arg, uint32_t timeout);
 extern void timer_delete(struct timer *timer);
 
+extern void virtio_init(void);
+
 #endif /* __OS_H__ */

@@ -18,6 +18,10 @@ void plic_init(void)
 	 * effective priority.
 	 */
 	*(uint32_t*)PLIC_PRIORITY(UART0_IRQ) = 7;
+	#ifdef QEMU
+	*(uint32_t*)PLIC_PRIORITY(DISK_IRQ) = 7;
+	#endif
+	
 	
 	//清空所有的中断enable
 	
@@ -56,8 +60,11 @@ void plic_init(void)
 	 * bit in the enables registers.
 	 */
 	 
-	*(uint32_t*)PLIC_SENABLE(hart, UART0_IRQ)= 0x1 << UART0_IRQ % 32;
-
+	*(uint32_t*)PLIC_SENABLE(hart, UART0_IRQ) |= 0x1 << UART0_IRQ % 32;
+	#ifdef QEMU
+	*(uint32_t*)PLIC_SENABLE(hart, DISK_IRQ) |= 0x1 << DISK_IRQ % 32;
+	#endif
+	
 	/* 
 	 * Set priority threshold for UART0.
 	 *

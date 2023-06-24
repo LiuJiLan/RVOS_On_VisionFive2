@@ -36,6 +36,7 @@
  */
 #ifdef QEMU
 #define UART0_IRQ 10
+#define DISK_IRQ  1
 #else
 #define UART0_IRQ 32
 #endif

@@ -2,6 +2,7 @@
 
 extern void trap_vector(void);
 extern void uart_isr(void);
+extern void disk_isr();
 extern void timer_handler(void);
 extern void schedule(void);
 extern void do_syscall(struct context *cxt);
@@ -18,15 +19,35 @@ void external_interrupt_handler()
 {
 	int irq = plic_claim();
 
-	if (irq == UART0_IRQ){
-      		uart_isr();
-	} else if (irq) {
-		printf("unexpected interrupt irq = %d\n", irq);
-	}
+	switch (irq) {
+		case 0x0:
+			printf("irq is zero!!!%d\n", irq);
+			break;
+		
+		#ifdef QEMU
+		case DISK_IRQ:
+			disk_isr();
+			break;
+		#endif
+
+		case UART0_IRQ:
+			uart_isr();
+			break;
 	
-	if (irq) {
-		plic_complete(irq);
+		default:
+			printf("unexpected interrupt irq = %d\n", irq);
+			break;
 	}
+
+	// if (irq == UART0_IRQ){
+    //   		uart_isr();
+	// } else if (irq) {
+	// 	printf("unexpected interrupt irq = %d\n", irq);
+	// }
+	
+	// if (irq) {
+	// 	plic_complete(irq);
+	// }
 }
 
 reg_t trap_handler(reg_t epc, reg_t cause, struct context *cxt)

@@ -62,6 +62,11 @@ void start_kernel(reg_t hartid, reg_t dtb_addr)
 	plic_init();
 	uart_puts("\n");
 
+	#ifdef QEMU
+	virtio_init();
+	uart_puts("\n");
+	#endif
+
 	timer_init();
 
 	sched_init();

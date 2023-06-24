@@ -2,12 +2,20 @@ include ../common.mk
 
 QEMU_DEBUG = y
 SYSCALL = y
+DEBUG_MODE = y
 
 LDS = os.ld
 
 ifeq (${QEMU_DEBUG}, y)
 CFLAGS += -D QEMU
 LDS = qemu.ld
+QFLAGS = -nographic -smp 1 -machine virt -bios default
+QFLAGS += -drive file=./sdcard.img,if=none,format=raw,id=x0
+QFLAGS += -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0
+endif
+
+ifeq (${DEBUG_MODE}, y)
+CFLAGS += -D DEBUG
 endif
 
 ifeq (${SYSCALL}, y)
@@ -31,7 +39,8 @@ SRCS_C = \
 	plic.c \
 	timer.c \
 	lock.c \
-	syscall.c
+	syscall.c \
+	virtio.c
 
 OBJS = $(SRCS_ASM:.S=.o)
 OBJS += $(SRCS_C:.c=.o)
@@ -61,8 +70,6 @@ mv: rvos_image.bin
 
 %.o : %.S
 	${CC} ${CFLAGS} -c -o $@ $<
-
-QFLAGS = -nographic -smp 1 -machine virt -bios default
 
 run: all
 	@${QEMU} -M ? | grep virt >/dev/null || exit

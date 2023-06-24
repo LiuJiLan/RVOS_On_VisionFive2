@@ -29,8 +29,8 @@ void do_syscall(struct context *cxt)
 	case 0x2:
 		func		= cxt->a0;
 		in_nr		= cxt->a1;
-		in_stack	= cxt->a2;
-		out_stack	= cxt->a3;
+		in_stack	= (void*)cxt->a2;
+		out_stack	= (void*)cxt->a3;
 
 		switch (func)
 		{

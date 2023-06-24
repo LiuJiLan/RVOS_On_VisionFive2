@@ -11,4 +11,7 @@ typedef unsigned long long uint64_t;
  */ 
 typedef uint64_t reg_t;
 
+#define PGSIZE 4096
+#define PGSHIFT 12
+
 #endif /* __TYPES_H__ */
